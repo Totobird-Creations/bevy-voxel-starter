@@ -6,7 +6,7 @@ use world::generate_chunk;
 
 
 
-type ChunkSize = block_mesh::ndshape::ConstShape3u32<18, 18, 18>;
+type ChunkSize = block_mesh::ndshape::ConstShape3u32<16, 16, 16>;
 
 
 

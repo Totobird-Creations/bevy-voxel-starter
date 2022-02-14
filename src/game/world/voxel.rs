@@ -31,22 +31,23 @@ impl Eq for Colour {}
 #[derive(Clone, Debug)]
 pub enum Model {
     Cube(
-        Colour /* Colour of cube */
+        Colour,         /* Colour of cube  */
+        Option<String>  /* Path to texture */
     ),
     Model(
-        String /* Path to model  */,
-        bool   /* Is opaque      */
+        String /* Path to model    */,
+        bool   /* Is opaque        */
     ),
-    None       /* Empty model    */
+    None       /* Empty model      */
 }
 
 impl PartialEq for Model {
     fn eq(&self, other: &Self) -> bool {
         match (self) {
-            Model::Cube(colour_a) => {
+            Model::Cube(colour_a, texture_a) => {
                 match (other) {
-                    Model::Cube(colour_b) => return colour_a == colour_b,
-                    _                     => return false
+                    Model::Cube(colour_b, texture_b) => return (colour_a == colour_b) && (texture_a == texture_b),
+                    _                              => return false
                 }
             },
             Model::Model(path_a, opaque_a) => {
@@ -82,17 +83,17 @@ impl block_mesh::Voxel for Voxel {
 
     fn is_empty(&self) -> bool {
         match (&self.0) {
-            Model::Cube(_color)          => false,
-            Model::Model(_path, _opaque) => false,
-            Model::None                  => true
+            Model::Cube(_color, _texture) => false,
+            Model::Model(_path, _opaque)  => false,
+            Model::None                   => true
         }
     }
 
     fn is_opaque(&self) -> bool {
         match (&self.0) {
-            Model::Cube(color)          => color.a() == 1.0,
-            Model::Model(_path, opaque) => *opaque,
-            Model::None                 => false
+            Model::Cube(color, _texture) => color.a() == 1.0,
+            Model::Model(_path, opaque)  => *opaque,
+            Model::None                  => false
         }
     }
 
@@ -118,6 +119,6 @@ pub mod voxels {
     };
 
     pub const EMPTY : Voxel = Voxel(Model::None);
-    pub const SOLID : Voxel = Voxel(Model::Cube(Colour(1.0, 1.0, 1.0, 1.0)));
+    pub const SOLID : Voxel = Voxel(Model::Cube(Colour(1.0, 1.0, 1.0, 1.0), None));
 
 }
