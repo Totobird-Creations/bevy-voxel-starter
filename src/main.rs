@@ -36,12 +36,8 @@ fn main() -> () {
 fn setup(
     mut commands  : Commands,
     mut meshes    : ResMut<Assets<Mesh>>,
-    mut materials : ResMut<Assets<StandardMaterial>>,
-    mut windows   : ResMut<Windows>
+    mut materials : ResMut<Assets<StandardMaterial>>
 ) -> () {
-    /*let window = windows.get_primary_mut().unwrap();
-    window.set_cursor_visibility(false);
-    window.set_cursor_lock_mode(true);*/
 
     commands.spawn_bundle(PbrBundle {
         mesh      : meshes.add(Mesh::from(shape::Plane {size : 1.0})),
@@ -55,34 +51,9 @@ fn setup(
             Vec3::new(-7.0, 20.0, 4.0)
         )),
         ..Default::default()
-    }).with(CameraRotator);
+    });
     commands.spawn_bundle(PointLightBundle {
         transform : Transform::from_translation(Vec3::new(4.0, 8.0, 4.0)),
         ..Default::default()
     });
-}
-
-
-
-#[derive(Component)]
-struct CameraRotator {
-    yaw   : f32,
-    pitch : f32
-}
-
-fn camera(
-    time                    : Res<Time>,
-    mut mouse_motion_events : EventReader<MouseMotion>,
-    mut query_camera        : Query<(With<Camera>, &mut Transform)>
-) -> () {
-    let (_, mut transform) = query_camera.single_mut();
-    let mut delta : Vec2 = Vec2::ZERO;
-    for event in mouse_motion_events.iter() {
-        delta += event.delta;
-    }
-    if (! delta.is_nan()) {
-        let rotation = transform.rotation.xyz();
-        transform.rotation =
-            Quat::from_axis_angle(Vec3::Y, rotation.y + delta.y * time.delta_seconds() * 100.0);
-    }
 }
