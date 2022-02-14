@@ -1,18 +1,13 @@
 use bevy::prelude::Mesh;
-use block_mesh::{
-    ndshape::ConstShape
-};
+use block_mesh::ndshape::ConstShape;
 
+use super::ChunkSize;
 pub mod generator;
 use generator::{
     Generator,
     FlatGenerator
 };
 pub mod voxel;
-
-
-
-type ChunkSize = block_mesh::ndshape::ConstShape3u32<16, 16, 16>;
 
 
 

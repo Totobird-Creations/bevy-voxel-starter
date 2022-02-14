@@ -2,8 +2,11 @@
 
 use bevy::{
     prelude::*,
-    input::mouse::MouseMotion
+    input::mouse::MouseMotion,
+    pbr::wireframe::{WireframePlugin, WireframeConfig}
 };
+// Remove before release.
+use bevy_fly_camera::{FlyCamera, FlyCameraPlugin};
 
 pub mod game;
 
@@ -23,6 +26,9 @@ fn main() -> () {
 
     // Add default plugin.
     app.add_plugins(DefaultPlugins);
+    app.add_plugin(WireframePlugin);
+    // Remove before release.
+    app.add_plugin(FlyCameraPlugin);
 
     // Setup systems.
     app.add_startup_system(setup);
@@ -34,10 +40,17 @@ fn main() -> () {
 
 
 fn setup(
-    mut commands  : Commands,
-    mut meshes    : ResMut<Assets<Mesh>>,
-    mut materials : ResMut<Assets<StandardMaterial>>
+    mut commands         : Commands,
+    mut meshes           : ResMut<Assets<Mesh>>,
+    mut materials        : ResMut<Assets<StandardMaterial>>,
+    mut wireframe_config : ResMut<WireframeConfig>,
+    mut windows          : ResMut<Windows>
 ) -> () {
+    wireframe_config.global = true;
+
+    let window = windows.get_primary_mut().unwrap();
+    window.set_cursor_lock_mode(true);
+    window.set_cursor_visibility(false);
 
     commands.spawn_bundle(PbrBundle {
         mesh      : meshes.add(Mesh::from(shape::Plane {size : 1.0})),
@@ -45,13 +58,7 @@ fn setup(
         transform : Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
         ..Default::default()
     });
-    commands.spawn_bundle(PerspectiveCameraBundle {
-        transform : Transform::from_matrix(Mat4::from_rotation_translation(
-            Quat::from_xyzw(-0.3, -0.5, -0.3, 0.5).normalize(),
-            Vec3::new(-7.0, 20.0, 4.0)
-        )),
-        ..Default::default()
-    });
+    commands.spawn_bundle(PerspectiveCameraBundle::default()).insert(FlyCamera::default());
     commands.spawn_bundle(PointLightBundle {
         transform : Transform::from_translation(Vec3::new(4.0, 8.0, 4.0)),
         ..Default::default()
