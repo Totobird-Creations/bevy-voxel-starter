@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ $1 == "run" ];
+then
+    cargo run --features bevy/dynamic
+elif [ $1 == "build" ];
+then
+    cargo build
+elif [ $1 == "test" ];
+then
+    cargo test --features bevy/dynamic
+else
+    echo "Invalid command: \`$1\`"
+fi

@@ -1,0 +1,9 @@
+[package]
+name    = "bevy_voxel_game"
+version = "1.0.0"
+authors = ["Totobird Creations"]
+edition = "2021"
+
+[dependencies]
+bevy       = "0.6"
+block-mesh = "0.1.0"
